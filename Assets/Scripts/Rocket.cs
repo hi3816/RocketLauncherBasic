@@ -13,17 +13,31 @@ public class Rocket : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI currentScoreTxt;
     [SerializeField] private TextMeshProUGUI HighScoreTxt;
+    [SerializeField] private GameObject warnText;
+    
+    int currentScore;
+    int highScore;
+
+
 
     void Awake()
     {
+        warnText.SetActive(false);
+
         startY = transform.position.y;
         _rb2d = GetComponent<Rigidbody2D>();
     }
     
     private void Update()
     {
-        float currentHeight = transform.position.y - startY;
-        currentScoreTxt.text = $"{(int)currentHeight} M";
+        float score = (int)(transform.position.y - startY);
+        currentScoreTxt.text = $"{score} M";
+
+        if (score > 0)
+        {
+            currentScore = (int)score; // 현재 점수를 업데이트
+            CheckHightScore(); // 최고 점수 체크
+        }
     }
 
     public void Shoot()
@@ -33,12 +47,35 @@ public class Rocket : MonoBehaviour
         {
             _rb2d.AddForce(Vector2.up * SPEED, ForceMode2D.Impulse);
             fuel -= FUELPERSHOOT;
-            Debug.Log("Shoot");
-            Debug.Log("if타는지");
         }
         else 
         {
-            Debug.Log("fuel이 모자랍니다");
+            warnText.SetActive(true);
+        }
+    }
+
+    public void CheckHightScore()
+    {
+        // 1. HighScoreTxt.text가 비어 있거나 0이면, 현재 점수를 최고 점수로 설정
+        if (string.IsNullOrEmpty(HighScoreTxt.text) || !int.TryParse(HighScoreTxt.text, out int highScore))
+        {
+            highScore = currentScore;
+            HighScoreTxt.text = highScore.ToString();
+            Debug.Log("최초 최고 점수 설정: " + highScore);
+            return;
+        }
+
+        // 2. 기존 최고 점수와 현재 점수를 비교
+        if (currentScore > highScore)
+        {
+            // 3. 현재 점수가 더 높으면 최고 점수를 업데이트
+            highScore = currentScore;
+            HighScoreTxt.text = highScore.ToString();
+            Debug.Log("최고 점수 갱신됨: " + highScore);
+        }
+        else
+        {
+            Debug.Log("현재 점수는 최고 점수보다 낮습니다.");
         }
     }
 }
