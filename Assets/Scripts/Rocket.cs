@@ -1,6 +1,8 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 
 public class Rocket : MonoBehaviour
 {
@@ -14,7 +16,8 @@ public class Rocket : MonoBehaviour
     [SerializeField] private TextMeshProUGUI currentScoreTxt;
     [SerializeField] private TextMeshProUGUI HighScoreTxt;
     [SerializeField] private GameObject warnText;
-    
+    [SerializeField] private GameObject retryButton;
+
     int currentScore;
     int highScore;
 
@@ -77,5 +80,10 @@ public class Rocket : MonoBehaviour
         {
             Debug.Log("현재 점수는 최고 점수보다 낮습니다.");
         }
+    }
+
+    public void Retry()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
